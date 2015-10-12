@@ -13,14 +13,23 @@ public class TestCglibProxy {
 		invokes.add(abstractProxy);
 		invokes.add(abstractProxy2);
 
-		CglibProxyFactory cglibProxyFactory = new CglibProxyFactory(Hello.class, invokes);
-		Hello hello = cglibProxyFactory.getProxy();
+		ProxyFactory jdkProxyFactory = new JdkProxyFactory(Hello.class, invokes);
+		ProxyFactory cglibProxyFactory = new CglibProxyFactory(Hello.class, invokes);
+		Greet hello = jdkProxyFactory.getProxy();
+		Greet hello1 = cglibProxyFactory.getProxy();
 		hello.say();
+		hello1.say();
 	}
 	
 }
 
-class Hello {
+interface Greet {
+	
+	public void say();
+	
+}
+
+class Hello implements Greet {
 	public void say() {
 		System.out.println("hello world!");
 	}

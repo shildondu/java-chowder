@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 public abstract class AbstractProxy implements MethodInvoke, Advice{
 
 	@Override
-	public Object invoke(CglibMethodInvocation methodInvocation) {
+	public Object invoke(AbstractMethodInvocation methodInvocation) {
 		Class<?> targetClass = methodInvocation.getTargetClass();
 		Method targetMethod = methodInvocation.getTargetMethod();
 		Object[] targetParams = methodInvocation.getTargetParams();

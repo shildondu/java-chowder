@@ -14,7 +14,7 @@ import net.sf.cglib.proxy.MethodProxy;
  * @date Oct 11, 2015 9:40:44 PM
  *
  */
-public class CglibProxyFactory {
+public class CglibProxyFactory implements ProxyFactory {
 	private Class<?> targetClass;
 	private List<MethodInvoke> proxys;
 	
@@ -23,6 +23,7 @@ public class CglibProxyFactory {
 		this.proxys = proxys;
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getProxy() {
 		return (T) Enhancer.create(targetClass, new MethodInterceptor() {

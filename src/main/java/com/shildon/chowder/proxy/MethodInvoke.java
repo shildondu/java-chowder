@@ -8,6 +8,6 @@ package com.shildon.chowder.proxy;
  */
 public interface MethodInvoke {
 
-	public Object invoke(CglibMethodInvocation methodInvocation);
+	public Object invoke(AbstractMethodInvocation methodInvocation);
 	
 }
