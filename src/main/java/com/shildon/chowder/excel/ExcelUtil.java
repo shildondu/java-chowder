@@ -1,6 +1,9 @@
 package com.shildon.chowder.excel;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -39,6 +42,33 @@ public class ExcelUtil {
 		createHeader(instruction, headerNames);
 		setContent(objects, headerNames);
 		write(outputStream);
+	}
+	
+	/**
+	 * get the excel file inputstream.
+	 * @param sheetName
+	 * @param instruction if you need extra instruction
+	 * @param objects
+	 * @param headerNames key is the name you want to show in excel file, value is the property name.
+	 * @return
+	 */
+	public <T> InputStream getInputStream(String sheetName, String[] instruction,
+			List<T> objects, Map<String, String> headerNames) {
+		hssfWorkbook = new HSSFWorkbook();
+		hssfSheet = hssfWorkbook.createSheet(sheetName);
+		createHeader(instruction, headerNames);
+		setContent(objects, headerNames);
+
+		ByteArrayInputStream inputStream = null;
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();) {
+
+			hssfWorkbook.write(outputStream);
+			inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return inputStream;
 	}
 	
 	private void createHeader(String[] instruction, Map<String, String> headerNames) {
