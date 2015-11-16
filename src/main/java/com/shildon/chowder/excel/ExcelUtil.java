@@ -115,7 +115,8 @@ public class ExcelUtil {
 				try {
 					
 					Method method = objects.get(i).getClass().getMethod(methodNames[j], new Class[] {});
-					String value = method.invoke(objects.get(i), new Object[] {}).toString();
+					String value = null == method.invoke(objects.get(i), new Object[] { } ) ? null :
+						method.invoke(objects.get(i), new Object[] { } ).toString();
 					hssfCell.setCellValue(value);
 					
 				} catch(NoSuchMethodException e) {
