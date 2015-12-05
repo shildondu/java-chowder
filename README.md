@@ -7,3 +7,7 @@
 ### 类图：
 
 ![AOP class](img/aop-class.png)
+
+## 3.模板类：
+
+### Hibernate通用模板类
