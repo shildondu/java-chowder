@@ -16,6 +16,7 @@ import org.hibernate.Transaction;
  */
 public class HibernateTemplate {
 	
+	// 需要用Spring注入或手动初始化
 	private static SessionFactory sessionFactory;
 	private static Session session;
 	private static Transaction transaction;

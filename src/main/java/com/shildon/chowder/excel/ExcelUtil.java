@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 /**
- * The Excel processing util.
+ * Excel文件读写工具。
  * @author shildon<shildondu@gmail.com>
  * @date Aug 15, 2015 3:52:53 PM
  *
@@ -28,12 +29,12 @@ public class ExcelUtil {
 	private int index = 0;
 	
 	/**
-	 * Export the excel file to the outputstream.
+	 * 导出Excel文件到输出流。
 	 * @param outputStream
 	 * @param sheetName
-	 * @param instruction if you need extra instruction
+	 * @param instruction 如果你需要额外的说明，会占用第二行第一列
 	 * @param objects
-	 * @param headerNames key is the name you want to show in excel file, value is the property name.
+	 * @param headerNames key是Excel文件列头名称，value是对应类中属性名称
 	 */
 	public <T> void export(OutputStream outputStream, String sheetName, String[] instruction,
 			List<T> objects, Map<String, String> headerNames) {
@@ -45,11 +46,11 @@ public class ExcelUtil {
 	}
 	
 	/**
-	 * get the excel file inputstream.
+	 * 得到写有Excel文件的输入流。
 	 * @param sheetName
-	 * @param instruction if you need extra instruction
+	 * @param instruction 如果你需要额外的说明，会占用第二行第一列
 	 * @param objects
-	 * @param headerNames key is the name you want to show in excel file, value is the property name.
+	 * @param headerNames key是Excel文件列头名称，value是对应类中属性名称
 	 * @return
 	 */
 	public <T> InputStream getInputStream(String sheetName, String[] instruction,
@@ -71,6 +72,50 @@ public class ExcelUtil {
 		return inputStream;
 	}
 	
+	/**
+	 * 通过流导入excel文件。
+	 * @param inputStream
+	 * @param sheetName
+	 * @param headerNames key是Excel文件列头名称，value是对应类中属性名称
+	 * @param target
+	 * @return
+	 */
+	public <T> List<T> importExcel(InputStream inputStream, String sheetName,
+			Map<String, String> headerNames, Class<T> target) {
+		List<T> objects = new LinkedList<T>();
+		try {
+			hssfWorkbook = new HSSFWorkbook(inputStream);
+			hssfSheet = hssfWorkbook.getSheet(sheetName);
+			
+			String[] setMethodName = getSetMethodName(headerNames);
+			
+			int rowCount = hssfSheet.getLastRowNum();
+			for (int i = 1; i <= rowCount; i++) {
+				HSSFRow result = hssfSheet.getRow(i);
+				T object = target.newInstance();
+				int cellCount = result.getLastCellNum();
+				
+				for (int j = 0; j <= cellCount; j++) {
+					HSSFCell cell = result.getCell(j);
+					Method method = null;
+					try {
+						method = target.getMethod(setMethodName[j], new Class[] {});
+						method.invoke(object, cell.getStringCellValue());
+					} catch (NoSuchMethodException | SecurityException |
+							IllegalAccessException | IllegalArgumentException |
+							InvocationTargetException e) {
+						e.printStackTrace();
+						continue;
+					}
+				}
+				objects.add(object);
+			}
+		} catch (IOException | InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return objects;
+	}
+	
 	private void createHeader(String[] instruction, Map<String, String> headerNames) {
 		HSSFRow header = hssfSheet.createRow(index++);
 
@@ -87,6 +132,22 @@ public class ExcelUtil {
 			HSSFCell hssfCell = header.createCell(i++);
 			hssfCell.setCellValue(head);
 		}
+	}
+	
+	private String[] getSetMethodName(Map<String, String> headerNames) {
+		HSSFRow header = hssfSheet.getRow(0);
+		int cellCount = header.getLastCellNum();
+		String[] setMethodName = new String[headerNames.size()];
+		
+		for (int i = 0; i <= cellCount; i++) {
+			HSSFCell cell = header.getCell(i);
+			String value = cell.getStringCellValue();
+			
+			String methodName = headerNames.get(value);
+			setMethodName[i] = null != methodName ? "set" + methodName.substring(0, 1).toUpperCase() + 
+					methodName.substring(1) : null;
+		}
+		return setMethodName;
 	}
 	
 	private String[] getMethodNames(Map<String, String> headerNames) {
