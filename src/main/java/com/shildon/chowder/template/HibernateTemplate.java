@@ -2,7 +2,8 @@ package com.shildon.chowder.template;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -21,7 +22,7 @@ public class HibernateTemplate {
 	private static Session session;
 	private static Transaction transaction;
 	
-	private static final Logger log = Logger.getLogger(HibernateTemplate.class);
+	private static final Log log = LogFactory.getLog(HibernateTemplate.class);
 	
 	/**
 	 * 开始事务

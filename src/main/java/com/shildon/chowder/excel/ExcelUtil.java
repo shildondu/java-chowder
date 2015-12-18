@@ -11,6 +11,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -27,6 +29,8 @@ public class ExcelUtil {
 	private HSSFWorkbook hssfWorkbook;
 	private HSSFSheet hssfSheet;
 	private int index = 0;
+	
+	private final Log log = LogFactory.getLog(this.getClass());
 	
 	/**
 	 * 导出Excel文件到输出流。
@@ -67,7 +71,7 @@ public class ExcelUtil {
 			inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 			
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("Can not get the inputstream.", e);
 		}
 		return inputStream;
 	}
@@ -104,14 +108,14 @@ public class ExcelUtil {
 					} catch (NoSuchMethodException | SecurityException |
 							IllegalAccessException | IllegalArgumentException |
 							InvocationTargetException e) {
-						e.printStackTrace();
+						log.error("Error in reflect.", e);
 						continue;
 					}
 				}
 				objects.add(object);
 			}
 		} catch (IOException | InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
+			log.error("Error in get workbook.", e);
 		}
 		return objects;
 	}
@@ -180,14 +184,9 @@ public class ExcelUtil {
 						method.invoke(objects.get(i), new Object[] { } ).toString();
 					hssfCell.setCellValue(value);
 					
-				} catch(NoSuchMethodException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
+				} catch(NoSuchMethodException | IllegalAccessException |
+						IllegalArgumentException | InvocationTargetException e) {
+					log.error("Error in reflect.", e);
 				}
 			}
 		}
@@ -197,7 +196,7 @@ public class ExcelUtil {
 		try {
 			hssfWorkbook.write(outputStream);
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("Can not write to outputstream.", e);
 		} finally {
 			try {
 				outputStream.flush();
@@ -205,7 +204,7 @@ public class ExcelUtil {
 				hssfWorkbook.close();
 				index = 0;
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error(e);
 			}
 		}
 	}

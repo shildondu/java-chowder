@@ -9,6 +9,9 @@ import java.nio.file.Paths;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * 文件传输工具。
  * @author shildon<shildondu@gmail.com>
@@ -16,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  */
 public class FileTransfer {
+	
+	public final Log log = LogFactory.getLog(FileTransfer.class);
 	
 	/**
 	 * 设置http下载相应头。
@@ -26,7 +31,7 @@ public class FileTransfer {
 			//转换成IOS8859-1字符以供浏览器显示
 			fileName = new String(fileName.getBytes("UTF-8"), "ISO8859-1");
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			log.error("Unsupported encode.", e);
 		}
 		response.setContentType("application/octet-stream");
 		response.setHeader("Pragma", "No-cache");
@@ -44,7 +49,7 @@ public class FileTransfer {
 		try {
 			download(response.getOutputStream(), prefix + fileName);
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("Can not get the outputstream of response.", e);
 		}
 	}
 	
@@ -61,8 +66,10 @@ public class FileTransfer {
 			try {
 				Files.copy(path, outputStream);
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error("Download error.", e);
 			}
+		} else {
+			log.info("The file is not existing.");
 		}
 	}
 	
@@ -80,14 +87,16 @@ public class FileTransfer {
 				try {
 					Files.createFile(target);
 				} catch (IOException e) {
-					e.printStackTrace();
+					log.error("Can not create target file.", e);
 				}
 			}
 			try {
 				Files.copy(source, target);
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error("Download error.", e);
 			}
+		} else {
+			log.info("The file is not existing");
 		}
 	}
 
