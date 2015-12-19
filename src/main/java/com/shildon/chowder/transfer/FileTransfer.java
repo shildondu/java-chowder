@@ -1,14 +1,22 @@
 package com.shildon.chowder.transfer;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -64,6 +72,7 @@ public class FileTransfer {
 		// Files封装了许多对Path的操作。
 		if (Files.exists(path)) {
 			try {
+				// 每次复制8K
 				Files.copy(path, outputStream);
 			} catch (IOException e) {
 				log.error("Download error.", e);
@@ -83,7 +92,7 @@ public class FileTransfer {
 		Path source = Paths.get(fullPath);
 		
 		if (Files.exists(source)) {
-			if (Files.exists(target)) {
+			if (!Files.exists(target)) {
 				try {
 					Files.createFile(target);
 				} catch (IOException e) {
@@ -96,8 +105,68 @@ public class FileTransfer {
 				log.error("Download error.", e);
 			}
 		} else {
-			log.info("The file is not existing");
+			log.info("The file is not existing.");
 		}
 	}
+	
+	/**
+	 * 利用commons-fileupload实现文件上传
+	 * @param request
+	 * @param directoryPath 目标目录，以"/"结尾
+	 */
+	public void upload(HttpServletRequest request, String directoryPath) {
+		// 判断httpRequest是否包含文件上传
+		if (ServletFileUpload.isMultipartContent(request)) {
+			Path directory = Paths.get(directoryPath);
+			
+			// 如果没有目录则创建
+			if (!Files.exists(directory)) {
+				try {
+					Files.createDirectory(directory);
+				} catch (IOException e) {
+					log.error("Error in creating directory.", e);
+				}
+			}
+		
+			// 下面的代码开始使用Commons-UploadFile组件处理上传的文件数据
+			FileItemFactory fileItemFactory = new DiskFileItemFactory();
+			ServletFileUpload servletFileUpload = new ServletFileUpload(fileItemFactory);
+			List<FileItem> fileItems = null;
+			try {
+				fileItems = servletFileUpload.parseRequest(request);
+			} catch (FileUploadException e) {
+				log.error("Error in parsing request.", e);
+			}
+		
+			for (FileItem fileItem : fileItems) {
+				if (!fileItem.isFormField()) {
+					// 得到文件名
+					String fileName = fileItem.getName();
+					String fullPath = directoryPath + fileName;
+					Path target = Paths.get(fullPath);
 
+					// 有相同名称的文件,增加后缀
+					for (int i = 0; Files.exists(target); i++) {
+						directoryPath = directoryPath + "(" + i + ")";
+						target = Paths.get(directoryPath);
+					}
+					// 创建新文件
+					try {
+						Files.createFile(target);
+					} catch (IOException e) {
+						log.error("Can not create target file.", e);
+					}
+					
+					try {
+						InputStream inputStream = fileItem.getInputStream();
+						Files.copy(inputStream, target);
+					} catch (IOException e) {
+						log.error("Error in copying file.", e);
+					}
+				}
+			}
+		} else {
+			log.info("The request is not a file upload request.");
+		}
+	}
 }
