@@ -1,4 +1,4 @@
-package transfer;
+package com.shildon.chowder.transfer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,7 +25,7 @@ public class FileTransferTest {
 		File file = new File("/home/shildon/Downloads/newTest.txt");
 		try (FileOutputStream fileOutputStream = new FileOutputStream(file);) {
 
-			fileTransfer.download(fileOutputStream, fullPath);
+			fileTransfer.download(fullPath, fileOutputStream);
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

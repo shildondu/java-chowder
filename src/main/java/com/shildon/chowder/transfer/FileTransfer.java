@@ -55,57 +55,57 @@ public class FileTransfer {
 	public void download(HttpServletResponse response, String prefix, String fileName) {
 		setHttpDownloadHead(response, fileName);
 		try {
-			download(response.getOutputStream(), prefix + fileName);
+			download(prefix + fileName, response.getOutputStream());
 		} catch (IOException e) {
 			log.error("Can not get the outputstream of response.", e);
+		}
+	}
+	
+	private void copy(Path source, OutputStream outputStream) {
+		// Files封装了许多对Path的操作。
+		if (Files.exists(source)) {
+			try {
+				// 每次复制8K
+				Files.copy(source, outputStream);
+			} catch (IOException e) {
+				log.error("Download error.", e);
+			}
+		} else {
+			log.info("The source file is not existing.");
 		}
 	}
 	
 	/**
 	 * 将文件写入流。
 	 * @param outputStream
-	 * @param fullPath
+	 * @param sourcePath 完整的源文件路径
 	 */
-	public void download(OutputStream outputStream, String fullPath) {
+	public void download(String sourcePath, OutputStream outputStream) {
 		// Path类似与java.io.File，但封装了更多的对路径的操作。
-		Path path = Paths.get(fullPath);
-		// Files封装了许多对Path的操作。
-		if (Files.exists(path)) {
-			try {
-				// 每次复制8K
-				Files.copy(path, outputStream);
-			} catch (IOException e) {
-				log.error("Download error.", e);
-			}
-		} else {
-			log.info("The file is not existing.");
-		}
+		Path source = Paths.get(sourcePath);
+		copy(source, outputStream);
 	}
 	
 	/**
 	 * 将文件写入目标路径。
+	 * @param sourcePath
 	 * @param targetPath
-	 * @param fullPath
 	 */
-	public void download(String targetPath, String fullPath) {
+	public void download(String sourcePath, String targetPath) {
+		Path source = Paths.get(sourcePath);
 		Path target = Paths.get(targetPath);
-		Path source = Paths.get(fullPath);
 		
-		if (Files.exists(source)) {
-			if (!Files.exists(target)) {
-				try {
-					Files.createFile(target);
-				} catch (IOException e) {
-					log.error("Can not create target file.", e);
-				}
-			}
+		if (!Files.exists(target)) {
 			try {
-				Files.copy(source, target);
+				Files.createFile(target);
 			} catch (IOException e) {
-				log.error("Download error.", e);
+				log.error("The target file is not existing and can not be created.", e);
 			}
-		} else {
-			log.info("The file is not existing.");
+		}
+		try {
+			copy(source, Files.newOutputStream(target));
+		} catch (IOException e) {
+			log.error("Error in createing outputstream to targetPath.", e);
 		}
 	}
 	
