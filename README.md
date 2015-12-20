@@ -6,7 +6,7 @@
 ## proxy
 使用`Jdk`反射和`Cglib`实现`AOP`
 
-	类图：
+类图：
 
 ![AOP class](img/aop-class.png)
 
