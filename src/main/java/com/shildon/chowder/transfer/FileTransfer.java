@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * @date Dec 16, 2015 10:39:01 PM
  *
  */
-public class FileTransfer {
+public final class FileTransfer {
 	
 	public final Log log = LogFactory.getLog(this.getClass());
 	

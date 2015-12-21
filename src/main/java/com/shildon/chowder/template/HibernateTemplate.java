@@ -15,7 +15,7 @@ import org.hibernate.Transaction;
  * @date Dec 5, 2015 8:40:09 PM
  *
  */
-public class HibernateTemplate {
+public final class HibernateTemplate {
 	
 	// 需要用Spring注入或手动初始化
 	private static SessionFactory sessionFactory;

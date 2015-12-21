@@ -19,7 +19,7 @@ import org.apache.commons.logging.LogFactory;
  * @date Dec 20, 2015 3:22:16 PM
  *
  */
-public class QrcodeUtil {
+public final class QrcodeUtil {
 	
 	private final Log log = LogFactory.getLog(this.getClass());
 	

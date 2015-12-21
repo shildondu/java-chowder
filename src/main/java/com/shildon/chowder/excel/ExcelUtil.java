@@ -24,7 +24,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
  * @date Aug 15, 2015 3:52:53 PM
  *
  */
-public class ExcelUtil {
+public final class ExcelUtil {
 	
 	private HSSFWorkbook hssfWorkbook;
 	private HSSFSheet hssfSheet;
