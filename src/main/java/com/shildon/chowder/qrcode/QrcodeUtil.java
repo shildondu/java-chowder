@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class QrcodeUtil {
 	
-	private final Log log = LogFactory.getLog(this.getClass());
+	private static final Log log = LogFactory.getLog(QrcodeUtil.class);
 	
 	/**
 	 * 生成二维码并写进输出流。

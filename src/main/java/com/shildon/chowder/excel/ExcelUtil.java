@@ -30,7 +30,7 @@ public final class ExcelUtil {
 	private HSSFSheet hssfSheet;
 	private int index = 0;
 	
-	private final Log log = LogFactory.getLog(this.getClass());
+	private static final Log log = LogFactory.getLog(ExcelUtil.class);
 	
 	/**
 	 * 导出Excel文件到输出流。

@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class FileTransfer {
 	
-	public final Log log = LogFactory.getLog(this.getClass());
+	public static final Log log = LogFactory.getLog(FileTransfer.class);
 	
 	/**
 	 * 设置http下载相应头。
