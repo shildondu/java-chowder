@@ -11,7 +11,7 @@
 ![AOP class](img/aop-class.png)
 
 ## ioc
-模拟基于`annotation`的ioc容器
+实现基于`annotation`的ioc容器
 
 ## template
 1. `Hibernate`通用模板类
