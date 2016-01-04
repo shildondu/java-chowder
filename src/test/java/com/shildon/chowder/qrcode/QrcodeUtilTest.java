@@ -1,5 +1,7 @@
 package com.shildon.chowder.qrcode;
 
+import java.io.UnsupportedEncodingException;
+
 import net.glxn.qrgen.image.ImageType;
 
 import org.junit.Before;
@@ -16,7 +18,14 @@ public class QrcodeUtilTest {
 	
 	@Test
 	public void test() {
-		qrcodeUtil.generateQrcode("I Love U", ImageType.PNG, "/home/shildon/Downloads/test.png");
+		byte[] bytes = "好久没这么畅快的聊天了，今天我又感性了。".getBytes();
+		try {
+			String content = new String(bytes, "ISO-8859-1");
+			qrcodeUtil.generateQrcode(content, ImageType.PNG, "/home/shildon/Downloads/160105.png");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
