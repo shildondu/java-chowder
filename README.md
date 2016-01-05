@@ -17,7 +17,7 @@
 
 ![AOP class](img/aop-class.png)
 
-<h2 id="ioc"> ioc <h2>
+<h2 id="ioc"> ioc </h2>
 实现基于`annotation`的ioc容器
 
 <h2 id="tempalte"> template </h2>
