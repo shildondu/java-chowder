@@ -1,36 +1,30 @@
 package com.shildon.chowder.ioc;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.shildon.chowder.ioc.annotation.Bean;
 
+/**
+ * Bean工厂，生产bean。
+ * @author shildon<shildondu@gmail.com>
+ * @date Jan 6, 2016 2:49:00 PM
+ *
+ */
 public class BeanFactory {
-	
-	private AnnotationResolver annotationResolver;
 	
 	private static final Log log = LogFactory.getLog(BeanFactory.class);
 	
-	public BeanFactory() {
-		annotationResolver = new AnnotationResolver();
-	}
-	
-	@SuppressWarnings("unchecked")
 	public <T> T getBean(Class<T> type) {
-		List<Class<?>> clazzs = annotationResolver.getAnnotationClazzs(Bean.class);
+		Class<T> clazz = ClassUtil.getClass(type, Bean.class);
 		T t = null;
-
-		for (Class<?> clazz : clazzs) {
-			log.info(clazz.getName());
-			if (type == clazz) {
-				try {
-					t = (T) clazz.newInstance();
-					log.info("instantiate success!");
-				} catch (InstantiationException | IllegalAccessException e) {
-					log.error("Instantiate " + type.getName() + " fail!", e);
-				}
+		
+		if (null != clazz) {
+			try {
+				t = (T) clazz.newInstance();
+				log.info("instantiate success!");
+			} catch (InstantiationException | IllegalAccessException e) {
+				log.error("Instantiate " + type.getName() + " fail!", e);
 			}
 		}
 		return t;
