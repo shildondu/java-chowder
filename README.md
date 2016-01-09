@@ -3,6 +3,7 @@
 * [excel](#excel)
 * [proxy](#proxy)
 * [ioc](#ioc)
+* [orm](#orm)
 * [template](#template)
 * [transfer](#transfer)
 * [qrcode](#qrcode)
@@ -19,6 +20,9 @@
 
 <h2 id="ioc"> ioc </h2>
 实现基于`annotation`的ioc容器
+
+<h2 id="orm"> orm </h2>
+利用反射简单地实现对象——关系映射
 
 <h2 id="tempalte"> template </h2>
 1. `Hibernate`通用模板类
