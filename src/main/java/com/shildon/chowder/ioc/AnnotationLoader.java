@@ -55,7 +55,10 @@ public class AnnotationLoader {
 		
 		// 构造绝对路径
 		String path = PROJECT_ROOT + fileName;
-		log.info(path);
+		
+		if (log.isDebugEnabled()) {
+			log.debug(path);
+		}
 
 		if (!Files.exists(Paths.get(path))) {
 			throw new FileNotFoundException("The properties file is not existing!");
@@ -67,7 +70,11 @@ public class AnnotationLoader {
 					try {
 						properties.load(is);
 						String packageName = (String) properties.get(PACKAGE_NAME);
-						log.info(packageName);
+						
+						if (log.isDebugEnabled()) {
+							log.debug(packageName);
+						}
+
 						loadClass(packageName, clazzs);
 					} catch (IOException e) {
 						log.error("Can not load the path!", e);
@@ -88,7 +95,10 @@ public class AnnotationLoader {
 					CLASS_SUFFIX;
 		}
 		String fullPath = PROJECT_ROOT + packagePath;
-		log.info(fullPath);
+		
+		if (log.isDebugEnabled()) {
+			log.debug(fullPath);
+		}
 		
 		File directory = new File(fullPath);
 		
