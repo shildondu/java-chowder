@@ -23,13 +23,15 @@ public class JdkProxyFactory implements ProxyFactory{
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getProxy() {
-		return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), targetClass.getInterfaces(), new InvocationHandler() {
+		return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), 
+				targetClass.getInterfaces(), new InvocationHandler() {
 			
 			@Override
 			public Object invoke(Object proxy, Method method, Object[] args)
 					throws Throwable {
 				// 这里proxy并不是原来的对象
-				return new JdkMethodInvocation(targetClass, targetClass.newInstance(), method, args, proxys).proceed();
+				return new JdkMethodInvocation(targetClass, targetClass.newInstance(),
+						method, args, proxys).proceed();
 			}
 
 		});

@@ -31,7 +31,8 @@ public class CglibProxyFactory implements ProxyFactory {
 			@Override
 			public Object intercept(Object obj, Method method, Object[] args,
 					MethodProxy proxy) throws Throwable {
-				return new CglibMethodInvocation(targetClass, obj, method, args, proxy, proxys).proceed();
+				return new CglibMethodInvocation(targetClass, obj, method, 
+						args, proxy, proxys).proceed();
 			}
 
 		});
