@@ -14,7 +14,7 @@ public class BaseDao {
 	
 	public void save(Object target) {
 		
-		final String sql = MysqlSqlResolver.getSql(OrmUtil.initEntity(target));
+		final String sql = MysqlSqlResolver.getSaveSql(OrmUtil.initEntity(target));
 		execute(new StatementCallback() {
 			
 			@Override
@@ -29,7 +29,7 @@ public class BaseDao {
 		});
 		
 	}
-
+	
 	// 使用回调机制，复用代码
 	public ResultSet execute(StatementCallback callback) {
 		Connection connection = DBUtil.getConnection();
