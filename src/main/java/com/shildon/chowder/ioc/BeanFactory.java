@@ -22,7 +22,11 @@ public class BeanFactory {
 		if (null != clazz) {
 			try {
 				t = (T) clazz.newInstance();
-				log.info("instantiate success!");
+				
+				if (log.isDebugEnabled()) {
+					log.debug("instantiate " + type.getName() + " successfully!");
+				}
+				
 			} catch (InstantiationException | IllegalAccessException e) {
 				log.error("Instantiate " + type.getName() + " fail!", e);
 			}

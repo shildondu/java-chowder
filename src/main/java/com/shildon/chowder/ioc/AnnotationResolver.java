@@ -1,6 +1,5 @@
 package com.shildon.chowder.ioc;
 
-import java.io.FileNotFoundException;
 import java.lang.annotation.Annotation;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +17,7 @@ public class AnnotationResolver {
 	
 	private AnnotationLoader annotationLoader;
 	
+	@SuppressWarnings("unused")
 	private static final Log log = LogFactory.getLog(AnnotationResolver.class);
 	
 	public AnnotationResolver() {
@@ -27,11 +27,8 @@ public class AnnotationResolver {
 	public List<Class<?>> getAnnotationClazzs(Class<?> annotationClass) {
 		List<Class<?>> clazzs = null;
 		List<Class<?>> annotationClazzs = new LinkedList<Class<?>>();
-		try {
-			clazzs = annotationLoader.loadResource();
-		} catch (FileNotFoundException e) {
-			log.error("Can not load resource", e);
-		}
+		clazzs = annotationLoader.loadClass();
+
 		for (Class<?> clazz : clazzs) {
 			Annotation[] annotations = clazz.getAnnotations();
 			for (Annotation annotation : annotations) {
