@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * @date Jan 2, 2016 4:02:25 PM
  *
  */
-public class AnnotationLoader {
+public class ClassScaner {
 	
 	private static final String DEFAULT_PROPERTIES = "scan.properties";
 	private static final String PACKAGE_NAME = "packageName";
@@ -36,7 +36,7 @@ public class AnnotationLoader {
 		PROJECT_ROOT = Thread.currentThread().getContextClassLoader().getResource("./").getPath();
 	}
 	
-	private static final Log log = LogFactory.getLog(AnnotationLoader.class);
+	private static final Log log = LogFactory.getLog(ClassScaner.class);
 	
 	/**
 	 * 加载指定路径下的所有类

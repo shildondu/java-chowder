@@ -1,11 +1,9 @@
 package com.shildon.chowder.ioc;
 
 import java.lang.annotation.Annotation;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.Map;
 
 /**
  * Annotation解析器。
@@ -15,25 +13,23 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AnnotationResolver {
 	
-	private AnnotationLoader annotationLoader;
-	
-	@SuppressWarnings("unused")
-	private static final Log log = LogFactory.getLog(AnnotationResolver.class);
+	private ClassScaner annotationLoader;
 	
 	public AnnotationResolver() {
-		annotationLoader = new AnnotationLoader();
+		annotationLoader = new ClassScaner();
 	}
 	
-	public List<Class<?>> getAnnotationClazzs(Class<?> annotationClass) {
+	public Map<String, Class<?>> getAnnotationClazzs(Class<?> annotationClass) {
 		List<Class<?>> clazzs = null;
-		List<Class<?>> annotationClazzs = new LinkedList<Class<?>>();
+		Map<String, Class<?>> annotationClazzs = new HashMap<String, Class<?>>();
 		clazzs = annotationLoader.loadClass();
 
 		for (Class<?> clazz : clazzs) {
 			Annotation[] annotations = clazz.getAnnotations();
 			for (Annotation annotation : annotations) {
 				if (annotationClass == annotation.annotationType()) {
-					annotationClazzs.add(clazz);
+					annotationClazzs.put(clazz.getName(), clazz);
+					break;
 				}
 			}
 		}
