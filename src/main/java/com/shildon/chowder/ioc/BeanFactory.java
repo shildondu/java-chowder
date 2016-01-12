@@ -22,16 +22,19 @@ public class BeanFactory {
 	private ConcurrentHashMap<String, Object> beanCache;
 	// 缓存bean类，初始化后只读，所以不需要考虑并发
 	private Map<String, Class<?>> beanClazzs;
-	private AnnotationResolver annotationResolver;
 	
 	public BeanFactory() {
 		beanCache = new ConcurrentHashMap<String, Object>();
-		annotationResolver = new AnnotationResolver();
-		beanClazzs = annotationResolver.getAnnotationClazzs(Bean.class);
+		beanClazzs = ReflectUtil.getAnnotationClazzs(Bean.class);
 	}
 	
 	private static final Log log = LogFactory.getLog(BeanFactory.class);
 	
+	/**
+	 * 根据class获取bean
+	 * @param type
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getBean(Class<T> type) {
 		T t = (T) beanCache.get(type.getName());
@@ -61,6 +64,10 @@ public class BeanFactory {
 		return t;
 	}
 	
+	/**
+	 * 初始化bean
+	 * @param bean
+	 */
 	private void initiateBean(Object bean) {
 		Class<?> clazz = bean.getClass();
 		Field[] injectFields = ReflectUtil.getAnnotationFields(clazz, Inject.class);

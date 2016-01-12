@@ -1,5 +1,11 @@
 package com.shildon.chowder.ioc;
 
+/**
+ * bean工具类
+ * @author shildon<shildondu@gmail.com>
+ * @date Jan 12, 2016 8:39:19 PM
+ *
+ */
 public class BeanUtil {
 	
 	public static Object instantiateBean(Class<?> clazz) throws InstantiationException, IllegalAccessException {

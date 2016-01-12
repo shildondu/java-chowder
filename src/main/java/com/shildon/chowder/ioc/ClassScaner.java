@@ -33,6 +33,7 @@ public class ClassScaner {
 	
 	private static final String PROJECT_ROOT;
 	static {
+		// 获取项目根目录
 		PROJECT_ROOT = Thread.currentThread().getContextClassLoader().getResource("./").getPath();
 	}
 	
