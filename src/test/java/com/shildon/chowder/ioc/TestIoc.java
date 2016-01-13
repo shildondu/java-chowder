@@ -7,7 +7,6 @@ import com.shildon.chowder.ioc.entity.User;
 
 public class TestIoc {
 
-	@Test
 	public void test() {
 		BeanFactory beanFactory = new BeanFactory();
 		User user = beanFactory.getBean(User.class);
@@ -18,6 +17,11 @@ public class TestIoc {
 		Department department = beanFactory.getBean(Department.class);
 		System.out.println(user.getDepartment() == department);
 		System.out.println(department.getUser() == user);
+	}
+	
+	@Test
+	public void testSomething() {
+
 	}
 	
 }

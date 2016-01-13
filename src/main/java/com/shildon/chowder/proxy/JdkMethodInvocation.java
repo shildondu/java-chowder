@@ -24,7 +24,7 @@ public class JdkMethodInvocation extends AbstractMethodInvocation{
 	protected Object execute() {
 		Object result = null;
 		try {
-			result =  this.targetMethod.invoke(this.targetObject, this.targetParams);
+			result = this.targetMethod.invoke(this.targetObject, this.targetParams);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
