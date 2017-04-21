@@ -99,7 +99,7 @@ public final class ExcelUtil {
 				T object = target.newInstance();
 				int cellCount = result.getLastCellNum();
 				
-				for (int j = 0; j <= cellCount; j++) {
+				for (int j = 0; j < cellCount; j++) {
 					HSSFCell cell = result.getCell(j);
 					Method method = null;
 					try {
