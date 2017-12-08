@@ -1,11 +1,11 @@
 package com.shildon.orm;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public class DBUtil {
 	
@@ -14,7 +14,7 @@ public class DBUtil {
 	private static final String username = "shildon";
 	private static final String password = "duxiaodong11";
 	
-	private static final Log log = LogFactory.getLog(DBUtil.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DBUtil.class);
 	
 	//线程不安全的做法
 	private static Connection connection;
@@ -24,9 +24,9 @@ public class DBUtil {
 			Class.forName(driverName);
 			connection = DriverManager.getConnection(url, username, password);
 		} catch (ClassNotFoundException e) {
-			log.error("Can not find driver: " + driverName, e);
+			LOGGER.error("Can not find driver: " + driverName, e);
 		} catch (SQLException e) {
-			log.error("Can not connect to database", e);
+			LOGGER.error("Can not connect to database", e);
 		}
 	}
 	

@@ -1,15 +1,15 @@
 package com.shildon.orm;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class OrmUtil {
 	
-	private static final Log log = LogFactory.getLog(OrmUtil.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OrmUtil.class);
 	
 	
 	public static Entity initEntity(Object target) {
@@ -20,7 +20,7 @@ public class OrmUtil {
 		String[] propertyValues = getPropertyValues(target);
 		
 		if (propertyNames.length != propertyValues.length) {
-			log.warn("Something error in initializing Entity.");
+			LOGGER.warn("Something error in initializing Entity.");
 		}
 		
 		for (int i = 0; i < propertyNames.length; i++) {
@@ -37,8 +37,8 @@ public class OrmUtil {
 		for (int i = 0; i < fields.length; i++) {
 			propertyNames[i] = fields[i].getName();
 			
-			if (log.isDebugEnabled()) {
-				log.debug(propertyNames[i]);
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug(propertyNames[i]);
 			}
 		}
 
@@ -53,8 +53,8 @@ public class OrmUtil {
 		for (int i = 0; i < fields.length; i++) {
 			String getMethodName = getMethodName(fields[i].getName());
 
-			if (log.isDebugEnabled()) {
-				log.debug(getMethodName);
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug(getMethodName);
 			}
 
 			try {
@@ -63,21 +63,21 @@ public class OrmUtil {
 				Object result = getMethod.invoke(target);
 				propertyValues[i] = result.toString();
 				
-				if (log.isDebugEnabled()) {
-					log.debug(propertyValues[i]);
+				if (LOGGER.isDebugEnabled()) {
+					LOGGER.debug(propertyValues[i]);
 				}
 				
 				
 			} catch (NoSuchMethodException e) {
-				log.error(e);
+				LOGGER.error("", e);
 			} catch (SecurityException e) {
-				log.error(e);
+				LOGGER.error("", e);
 			} catch (IllegalAccessException e) {
-				log.error(e);
+				LOGGER.error("", e);
 			} catch (IllegalArgumentException e) {
-				log.error(e);
+				LOGGER.error("", e);
 			} catch (InvocationTargetException e) {
-				log.error(e);
+				LOGGER.error("",e);
 			}
 		}
 		

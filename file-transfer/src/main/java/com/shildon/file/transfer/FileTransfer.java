@@ -1,5 +1,15 @@
 package com.shildon.file.transfer;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,17 +19,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * 文件传输工具。
  * @author shildon<shildondu@gmail.com>
@@ -28,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class FileTransfer {
 	
-	public static final Log log = LogFactory.getLog(FileTransfer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FileTransfer.class);
 	
 	/**
 	 * 设置http下载相应头。
@@ -39,7 +38,7 @@ public final class FileTransfer {
 			//转换成IOS8859-1字符以供浏览器显示
 			fileName = new String(fileName.getBytes("UTF-8"), "ISO8859-1");
 		} catch (UnsupportedEncodingException e) {
-			log.error("Unsupported encode.", e);
+			LOGGER.error("Unsupported encode.", e);
 		}
 		response.setContentType("application/octet-stream");
 		response.setHeader("Pragma", "No-cache");
@@ -57,7 +56,7 @@ public final class FileTransfer {
 		try {
 			download(prefix + fileName, response.getOutputStream());
 		} catch (IOException e) {
-			log.error("Can not get the outputstream of response.", e);
+			LOGGER.error("Can not get the outputstream of response.", e);
 		}
 	}
 	
@@ -68,10 +67,10 @@ public final class FileTransfer {
 				// 每次复制8K
 				Files.copy(source, outputStream);
 			} catch (IOException e) {
-				log.error("Download error.", e);
+				LOGGER.error("Download error.", e);
 			}
 		} else {
-			log.info("The source file is not existing.");
+			LOGGER.info("The source file is not existing.");
 		}
 	}
 	
@@ -99,13 +98,13 @@ public final class FileTransfer {
 			try {
 				Files.createFile(target);
 			} catch (IOException e) {
-				log.error("The target file is not existing and can not be created.", e);
+				LOGGER.error("The target file is not existing and can not be created.", e);
 			}
 		}
 		try {
 			copy(source, Files.newOutputStream(target));
 		} catch (IOException e) {
-			log.error("Error in createing outputstream to targetPath.", e);
+			LOGGER.error("Error in createing outputstream to targetPath.", e);
 		}
 	}
 	
@@ -124,7 +123,7 @@ public final class FileTransfer {
 				try {
 					Files.createDirectory(directory);
 				} catch (IOException e) {
-					log.error("Error in creating directory.", e);
+					LOGGER.error("Error in creating directory.", e);
 				}
 			}
 		
@@ -135,7 +134,7 @@ public final class FileTransfer {
 			try {
 				fileItems = servletFileUpload.parseRequest(request);
 			} catch (FileUploadException e) {
-				log.error("Error in parsing request.", e);
+				LOGGER.error("Error in parsing request.", e);
 			}
 		
 			for (FileItem fileItem : fileItems) {
@@ -154,19 +153,19 @@ public final class FileTransfer {
 					try {
 						Files.createFile(target);
 					} catch (IOException e) {
-						log.error("Can not create target file.", e);
+						LOGGER.error("Can not create target file.", e);
 					}
 					
 					try {
 						InputStream inputStream = fileItem.getInputStream();
 						Files.copy(inputStream, target);
 					} catch (IOException e) {
-						log.error("Error in copying file.", e);
+						LOGGER.error("Error in copying file.", e);
 					}
 				}
 			}
 		} else {
-			log.info("The request is not a file upload request.");
+			LOGGER.info("The request is not a file upload request.");
 		}
 	}
 }

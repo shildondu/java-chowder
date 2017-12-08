@@ -10,8 +10,8 @@ import java.nio.file.Paths;
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 二维码生成工具。
@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class QrcodeUtil {
 	
-	private static final Log log = LogFactory.getLog(QrcodeUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(QrcodeUtil.class);
 	
 	/**
 	 * 生成二维码并写进输出流。

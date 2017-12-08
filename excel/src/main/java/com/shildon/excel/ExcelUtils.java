@@ -1,22 +1,19 @@
 package com.shildon.excel;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Excel文件读写工具。
@@ -28,9 +25,9 @@ public final class ExcelUtils {
 	
 	private HSSFWorkbook hssfWorkbook;
 	private HSSFSheet hssfSheet;
-	private int index = 0;
+	private AtomicInteger index = new AtomicInteger(0);
 	
-	private static final Log log = LogFactory.getLog(ExcelUtils.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ExcelUtils.class);
 	
 	/**
 	 * 导出Excel文件到输出流。
@@ -71,7 +68,7 @@ public final class ExcelUtils {
 			inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 			
 		} catch (IOException e) {
-			log.error("Can not get the inputstream.", e);
+			LOGGER.error("Can not get the inputstream.", e);
 		}
 		return inputStream;
 	}
@@ -108,27 +105,27 @@ public final class ExcelUtils {
 					} catch (NoSuchMethodException | SecurityException |
 							IllegalAccessException | IllegalArgumentException |
 							InvocationTargetException e) {
-						log.error("Error in reflect.", e);
+						LOGGER.error("Error in reflect.", e);
 						continue;
 					}
 				}
 				objects.add(object);
 			}
 		} catch (IOException | InstantiationException | IllegalAccessException e) {
-			log.error("Error in get workbook.", e);
+			LOGGER.error("Error in get workbook.", e);
 		}
 		return objects;
 	}
 	
 	private void createHeader(String[] instruction, Map<String, String> headerNames) {
-		HSSFRow header = hssfSheet.createRow(index++);
+		HSSFRow header = hssfSheet.createRow(index.getAndIncrement());
 
 		if (null != instruction && 0 != instruction.length) {
 			for(int i = 0; i < instruction.length; i++) {
 				HSSFCell hssfCell = header.createCell(i);
 				hssfCell.setCellValue(instruction[i]);
 			}
-			header = hssfSheet.createRow(index++);
+			header = hssfSheet.createRow(index.getAndIncrement());
 		}
 		
 		int i = 0;
@@ -171,7 +168,7 @@ public final class ExcelUtils {
 	private <T> void setContent(List<T> objects, Map<String, String> headerNames) {
 		String[] methodNames = getMethodNames(headerNames);
 		for(int i = 0; i < objects.size(); i++) {
-			HSSFRow hssfRow = hssfSheet.createRow(index++);
+			HSSFRow hssfRow = hssfSheet.createRow(index.getAndIncrement());
 
 
 			for(int j = 0; j < headerNames.size(); j++) {
@@ -186,7 +183,7 @@ public final class ExcelUtils {
 					
 				} catch(NoSuchMethodException | IllegalAccessException |
 						IllegalArgumentException | InvocationTargetException e) {
-					log.error("Error in reflect.", e);
+					LOGGER.error("Error in reflect.", e);
 				}
 			}
 		}
@@ -196,15 +193,15 @@ public final class ExcelUtils {
 		try {
 			hssfWorkbook.write(outputStream);
 		} catch (IOException e) {
-			log.error("Can not write to outputstream.", e);
+			LOGGER.error("Can not write to out put stream.", e);
 		} finally {
 			try {
 				outputStream.flush();
 				outputStream.close();
 				hssfWorkbook.close();
-				index = 0;
+				index.set(0);
 			} catch (IOException e) {
-				log.error(e);
+				LOGGER.error("Can not close the out put stream",e);
 			}
 		}
 	}

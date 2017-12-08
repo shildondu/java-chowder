@@ -1,14 +1,13 @@
 package com.shildon.ioc;
 
+import com.shildon.ioc.annotation.Bean;
+import com.shildon.ioc.annotation.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.shildon.ioc.annotation.Bean;
-import com.shildon.ioc.annotation.Inject;
 
 /**
  * Bean工厂，生产bean。
@@ -28,8 +27,8 @@ public class BeanFactory {
 		beanClazzs = ReflectUtil.getAnnotationClazzs(Bean.class);
 	}
 	
-	private static final Log log = LogFactory.getLog(BeanFactory.class);
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(BeanFactory.class);
+
 	/**
 	 * 根据class获取bean
 	 * @param type
@@ -38,10 +37,10 @@ public class BeanFactory {
 	@SuppressWarnings("unchecked")
 	public <T> T getBean(Class<T> type) {
 		T t = (T) beanCache.get(type.getName());
-		
+
 		if (null == t) {
 			Class<T> clazz = (Class<T>) beanClazzs.get(type.getName());
-			
+
 			if (null != clazz) {
 				try {
 					t = (T) BeanUtil.instantiateBean(clazz);
@@ -50,12 +49,12 @@ public class BeanFactory {
 					// 初始化bean，依赖注入的地方
 					initiateBean(t);
 
-					if (log.isDebugEnabled()) {
-						log.debug("instantiate " + type.getName() + " successfully!");
+					if (LOGGER.isDebugEnabled()) {
+						LOGGER.debug("instantiate " + type.getName() + " successfully!");
 					}
 					
 				} catch (InstantiationException | IllegalAccessException e) {
-					log.error("Instantiate " + type.getName() + " fail!", e);
+					LOGGER.error("Instantiate " + type.getName() + " fail!", e);
 				}
 			} else {
 				// TODO
@@ -77,8 +76,7 @@ public class BeanFactory {
 			try {
 				field.set(bean, getBean(type));
 			} catch (IllegalArgumentException | IllegalAccessException e) {
-				log.error(e);
-				e.printStackTrace();
+				LOGGER.error("error", e);
 			}
 		}
 	}

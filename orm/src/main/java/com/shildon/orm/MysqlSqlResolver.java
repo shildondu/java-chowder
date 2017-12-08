@@ -1,9 +1,9 @@
 package com.shildon.orm;
 
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.List;
 
 public class MysqlSqlResolver {
 	
@@ -12,7 +12,7 @@ public class MysqlSqlResolver {
 	private static final String MYSQL_QUERY = "select ? from ? where ?";
 	private static final String MYSQL_UPDATE = "update ? set ? where ?";
 	
-	private static Log log = LogFactory.getLog(MysqlSqlResolver.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MysqlSqlResolver.class);
 	
 	public static String getSaveSql(Entity entity) {
 		List<Entity.Property> properties = entity.getProperties();
@@ -28,8 +28,8 @@ public class MysqlSqlResolver {
 		sql = sql.replaceFirst("\\?", nameBuilder.substring(0, nameBuilder.length() - 1));
 		sql = sql.replaceFirst("\\?", valueBuilder.substring(0, valueBuilder.length() - 1));
 		
-		if (log.isDebugEnabled()) {
-			log.debug(sql);
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug(sql);
 		}
 		
 		return sql;
@@ -46,8 +46,8 @@ public class MysqlSqlResolver {
 		
 		sql = sql.replaceFirst("\\?", condition.toString());
 		
-		if (log.isDebugEnabled()) {
-			log.debug(sql);
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug(sql);
 		}
 		
 		return sql;

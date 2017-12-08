@@ -18,10 +18,10 @@ public class QrcodeUtilTest {
 	
 	@Test
 	public void test() {
-		byte[] bytes = "好久没这么畅快的聊天了，今天我又感性了。".getBytes();
+		byte[] bytes = "http://www.baidu.com".getBytes();
 		try {
 			String content = new String(bytes, "ISO-8859-1");
-			qrcodeUtil.generateQrcode(content, ImageType.PNG, "/home/shildon/Downloads/160105.png");
+			qrcodeUtil.generateQrcode(content, ImageType.PNG, "C:\\Users\\Administrator\\Downloads\\test.png");
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
