@@ -13,6 +13,7 @@
         <module>qrcode</module>
         <module>file-transfer</module>
         <module>redis</module>
+        <module>learn</module>
     </modules>
     <packaging>pom</packaging>
 
