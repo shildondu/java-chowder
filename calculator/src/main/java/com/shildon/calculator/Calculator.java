@@ -14,7 +14,7 @@ import java.util.Stack;
 public final class Calculator {
 
     /**
-     * 历史命令，使用双向链表存储，方便便利
+     * 历史命令，使用双向链表存储，方便遍历
      */
     private final List<Operation> histories;
     /**
